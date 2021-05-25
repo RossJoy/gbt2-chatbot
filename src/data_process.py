@@ -14,7 +14,8 @@ exclude_symbol = "_conv"
 comma_symbol = "_comma_"
 
 # For persona chat
-persona_chat_url = "https://s3.amazonaws.com/datasets.huggingface.co/personachat/personachat_self_original.json"
+# persona_chat_url = "https://s3.amazonaws.com/datasets.huggingface.co/personachat/personachat_self_original.json"
+persona_chat_url = "../dataset/tpc.json"
 silence_symbol = "__ SILENCE __"
 
 
@@ -105,9 +106,9 @@ def load_empathetic_dialogues(tokenizer, train_frac):
 
 
 def load_persona_chat(tokenizer, train_frac):
-    import urllib.request, json
-    with urllib.request.urlopen(persona_chat_url) as f:
-        dataset = json.loads(f.read().decode())
+    import json
+    with open(persona_chat_url) as f:
+        dataset = json.loads(f.read())
         
     train_data = dataset['train']
     valid_data = dataset['valid']
@@ -115,7 +116,7 @@ def load_persona_chat(tokenizer, train_frac):
     total_dialogues = []
     
     for obj in tqdm(total_data):
-        dialogue = obj['utterances'][-1]['history']
+        dialogue = obj['ifadeler'][-1]['tarih']
         new_dialogue = []
         
         for i, utter in enumerate(dialogue):
