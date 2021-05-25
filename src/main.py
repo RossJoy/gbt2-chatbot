@@ -167,9 +167,8 @@ class Manager():
             valid_ppl = np.mean(valid_ppls)
               
         return valid_loss, valid_ppl
-        
-              
-    def inference(self):
+
+    def test(self):
         print("Let's start!")
         print(f"If you want to quit the conversation, please type \"{self.config['end_command']}\".")
         self.model.eval()
@@ -270,21 +269,21 @@ class Manager():
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_path', required=True, default='config.json', help="The path to configuration file.")
-    parser.add_argument('--mode', required=True, help="Train or inference?")
+    parser.add_argument('--mode', required=True, help="Train or test?")
     parser.add_argument('--ckpt_name', required=False, help="Best checkpoint file.")
               
     args = parser.parse_args()
     
-    assert args.mode == 'train' or args.mode=='inference', print("Please specify a correct mode name, 'train' or 'inference'.")
+    assert args.mode == 'train' or args.mode=='test', print("Please specify a correct mode name, 'train' or 'test'.")
               
     if args.mode == 'train':
         manager = Manager(args.config_path, args.mode, ckpt_name=args.ckpt_name)
 
         manager.train()
         
-    elif args.mode == 'inference':
+    elif args.mode == 'test':
         assert args.ckpt_name is not None, "Please specify the trained model checkpoint."
         
         manager = Manager(args.config_path, args.mode, ckpt_name=args.ckpt_name)
         
-        manager.inference()
+        manager.test()
