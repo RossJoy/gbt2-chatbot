@@ -27,7 +27,7 @@ class Manager():
         
         # Tokenizer & Vocab
         print("Loading the tokenizer...")
-        self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        self.tokenizer = GPT2Tokenizer.from_pretrained('redrussianarmy/gpt2-turkish-cased')
         special_tokens = {
             'bos_token': self.config['bos'],
             'eos_token': self.config['eos'],
@@ -47,7 +47,7 @@ class Manager():
         
         # Load model    
         print("Loading the model...")
-        self.model = GPT2LMHeadModel.from_pretrained('gpt2').to(self.config['device'])
+        self.model = GPT2LMHeadModel.from_pretrained('redrussianarmy/gpt2-turkish-cased').to(self.config['device'])
         self.model.resize_token_embeddings(self.config['vocab_size'])
             
         if mode == 'train':            

@@ -70,7 +70,7 @@ if __name__=='__main__':
         config = json.load(f)
     
     print("Loading the tokenizer...")
-    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    tokenizer = GPT2Tokenizer.from_pretrained('redrussianarmy/gpt2-turkish-cased')
     
     print("Loading & Merging all datasets...")
     train_dialogues, valid_dialogues, total_train_utter_num, total_valid_utter_num = merge_data(tokenizer, config['train_frac'])
