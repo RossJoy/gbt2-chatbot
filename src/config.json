@@ -12,7 +12,7 @@
 	"device": "cpu",
 	"learning_rate": 5e-4,
 	"batch_size": 4,
-	"num_epochs": 10,
+	"num_epochs": 2,
 	"max_len": 1024,
 	"max_time": 5,
 	"nucleus_p": 0.9,
