@@ -172,56 +172,56 @@ class Manager():
         print("Let's start!")
         print(f"If you want to quit the conversation, please type \"{self.config['end_command']}\".")
         self.model.eval()
-        
+
         with torch.no_grad():
             cur_speaker = 1
             input_ids_list = []
             token_type_ids_list = []
             t = 0
             output_id = None
-            
+
             while True:
                 if cur_speaker == 1:
                     cur_speaker_id = self.config['speaker1_id']
                     utter = input("You: ")
-                    
+
                     if utter == self.config['end_command']:
                         print("Bot: Good bye.")
                         break
                     
                     input_id = [cur_speaker_id] + self.tokenizer.encode(utter)
-                    
+
                     if t == 0:
                         input_id = [self.config['bos_id']] + input_id
                 else:
                     cur_speaker_id = self.config['speaker2_id']
                     input_id = copy.deepcopy(output_id)
-                    
+
                 token_type_id = [cur_speaker_id] * len(input_id)
-                
+
                 if input_id[-1] == self.config['eos_id']:
                     input_id = input_id[:-1]
                     token_type_id = token_type_id[:-1] 
-                
+
                 input_ids_list.append(input_id)
                 token_type_ids_list.append(token_type_id)
-                
+
                 if t >= self.config['max_time']:
                     input_ids_list = input_ids_list[1:]
                     token_type_ids_list = token_type_ids_list[1:]
-                
+                    
                 next_speaker = (cur_speaker % 2) + 1
                 if next_speaker == 1:
                     next_speaker_id = self.config['speaker1_id']
                 else:
                     next_speaker_id = self.config['speaker2_id']
-                
+
                 if cur_speaker == 1:
                     output_id = self.nucleus_sampling(input_ids_list, token_type_ids_list, next_speaker_id)
                     res = self.tokenizer.decode(output_id)
 
                     print(f"Bot: {res}")
-                
+                    
                 cur_speaker = copy.deepcopy(next_speaker)
                 t += 1
                 
@@ -267,23 +267,23 @@ class Manager():
                     
 
 if __name__=='__main__':
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('--config_path', required=True, default='config.json', help="The path to configuration file.")
-    # parser.add_argument('--mode', required=True, help="Train or test?")
-    # parser.add_argument('--ckpt_name', required=False, help="Best checkpoint file.")
-              
-    # args = parser.parse_args()
-    
-    # assert args.mode == 'train' or args.mode=='test', print("Please specify a correct mode name, 'train' or 'test'.")
-              
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config_path', required=True, default='config.json', help="The path to configuration file.")
+    parser.add_argument('--mode', required=True, help="Train or test?")
+    parser.add_argument('--ckpt_name', required=False, help="Best checkpoint file.")
 
-    manager = Manager('./config.json', 'train')
+    args = parser.parse_args()
 
-    manager.train()
-        
-    # elif args.mode == 'test':
-    #     assert args.ckpt_name is not None, "Please specify the trained model checkpoint."
-        
-    #     manager = Manager(args.config_path, args.mode, ckpt_name=args.ckpt_name)
-        
-    #     manager.test()
+    assert args.mode == 'train' or args.mode=='test', print("Please specify a correct mode name, 'train' or 'test'.")
+
+    if args.mode == 'train':
+        manager = Manager(args.config_path, args.mode, ckpt_name=args.ckpt_name)
+
+        manager.train()
+
+    elif args.mode == 'test':
+        assert args.ckpt_name is not None, "Please specify the trained model checkpoint."
+
+        manager = Manager(args.config_path, args.mode, ckpt_name=args.ckpt_name)
+
+        manager.test()
